@@ -19,7 +19,9 @@ pipeline {
             steps {
                 script {
                     echo "Updating server..."
-                    sh 'sudo apt-get update -y'
+                    sh '''
+                        ssh chrrodri@192.168.1.108 "echo 'Updating server...'; sudo apt update && sudo apt upgrade -y"
+                    '''
                     // Add your build commands here
                 }
             }
