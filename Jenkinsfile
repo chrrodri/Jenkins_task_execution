@@ -1,24 +1,28 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Prepare SSH') {
-            steps {
-                sh '''
-                    mkdir -p ~/.ssh
-                    ssh-keyscan -H 192.168.1.108 >> ~/.ssh/known_hosts
-                    chmod 700 ~/.ssh
-                    chmod 600 ~/.ssh/known_hosts
-                '''
-            }
-        }
+    options {
+        timestamps()
+        skipStagesAfterUnstable()
+    }
 
+    stages {
         stage('Test SSH') {
             steps {
-                sshagent(credentials: ['chrrodri-ssh-key']) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'chrrodri-ssh-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
                     sh '''
-                        echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
-                        ssh-add -l
+                        mkdir -p ~/.ssh
+                        ssh-keyscan -H 192.168.1.108 >> ~/.ssh/known_hosts
+                        chmod 700 ~/.ssh
+                        chmod 600 ~/.ssh/known_hosts
+
+                        ssh -i "$SSH_KEY" -o BatchMode=yes "$SSH_USER@192.168.1.108" "hostname && whoami"
                     '''
                 }
             }
