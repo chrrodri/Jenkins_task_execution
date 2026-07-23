@@ -3,7 +3,6 @@ pipeline {
 
     options {
         timestamps()
-        skipStagesAfterUnstable()
     }
 
     stages {
@@ -22,7 +21,7 @@ pipeline {
                         chmod 700 ~/.ssh
                         chmod 600 ~/.ssh/known_hosts
 
-                        ssh -i "$SSH_KEY" -o BatchMode=yes "$SSH_USER@192.168.1.108" "hostname && whoami"
+                        ssh -i "$SSH_KEY" -o IdentitiesOnly=yes -o BatchMode=yes "$SSH_USER@192.168.1.108" "hostname && whoami"
                     '''
                 }
             }
