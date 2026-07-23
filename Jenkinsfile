@@ -1,36 +1,41 @@
 pipeline {
-
     agent any
 
     options {
         timestamps()
-        //ansiColor('xterm')
         skipStagesAfterUnstable()
-        //timeout(time: 60, unit: 'MINUTES')
     }
 
-/*     environment {
-        CHRRODRI_TOKEN           = credentials('chrrodri-token')
-    } */
-
     stages {
-
-        stage('Server Updates') {
+        stage('Prepare SSH') {
             steps {
-                script {
-                    echo "Updating server..."
+                sh '''
+                    mkdir -p ~/.ssh
+                    ssh-keyscan -H 192.168.1.108 >> ~/.ssh/known_hosts
+                    chmod 700 ~/.ssh
+                    chmod 600 ~/.ssh/known_hosts
+                '''
+            }
+        }
+
+        stage('Connect to Server') {
+            steps {
+                sshagent(credentials: ['chrrodri-token']) {
                     sh '''
-                        ssh chrrodri@192.168.1.108 "echo 'Updating server...'; sudo apt update && sudo apt upgrade -y"
+                        ssh chrrodri@192.168.1.108 "hostname && whoami"
                     '''
-                    // Add your build commands here
                 }
             }
         }
 
-/*         post { 
-            always { 
-                cleanWs()
-            } 
-        }  */
-    }   
+        stage('Server Updates') {
+            steps {
+                sshagent(credentials: ['chrrodri-token']) {
+                    sh '''
+                        ssh chrrodri@192.168.1.108 "echo 'Updating server...' && sudo apt update && sudo apt upgrade -y"
+                    '''
+                }
+            }
+        }
+    }
 }
