@@ -9,9 +9,9 @@ pipeline {
         //timeout(time: 60, unit: 'MINUTES')
     }
 
-    environment {
+/*     environment {
         CHRRODRI_TOKEN           = credentials('chrrodri-token')
-    }
+    } */
 
     stages {
 
