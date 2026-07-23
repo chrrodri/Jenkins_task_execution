@@ -15,10 +15,11 @@ pipeline {
 
     stages {
 
-        stage('BUILD') {
+        stage('Server Updates') {
             steps {
                 script {
-                    echo "Building the project..."
+                    echo "Updating server..."
+                    sh 'sudo apt-get update -y'
                     // Add your build commands here
                 }
             }
