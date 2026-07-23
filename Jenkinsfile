@@ -17,7 +17,8 @@ pipeline {
             steps {
                 sshagent(credentials: ['chrrodri-ssh']) {
                     sh '''
-                        ssh -o BatchMode=yes chrrodri@192.168.1.108 "hostname && whoami"
+                        ssh-add -l
+                        ssh -vvv -o BatchMode=yes chrrodri@192.168.1.108 "hostname && whoami"
                     '''
                 }
             }
