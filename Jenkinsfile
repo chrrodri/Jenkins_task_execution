@@ -15,10 +15,10 @@ pipeline {
 
         stage('Test SSH') {
             steps {
-                sshagent(credentials: ['chrrodri-ssh']) {
+                sshagent(credentials: ['chrrodri-ssh-key']) {
                     sh '''
+                        echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
                         ssh-add -l
-                        ssh -vvv -o BatchMode=yes chrrodri@192.168.1.108 "hostname && whoami"
                     '''
                 }
             }
