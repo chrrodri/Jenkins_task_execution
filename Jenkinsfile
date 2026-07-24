@@ -49,10 +49,7 @@ pipeline {
                             exit 1
                         fi
 
-                        ssh -o IdentitiesOnly=yes \
-                            -o BatchMode=yes \
-                            "$SSH_USER@$SSH_HOST" \
-                            "$REMOTE_CMD"
+                        ssh -o BatchMode=yes "$SSH_USER@$SSH_HOST" "$REMOTE_CMD"
                     '''
                 }
             }
