@@ -11,7 +11,11 @@ pipeline {
             credentialType: 'com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey',
             required: true
         )
-        choice(name: 'ACTION', choices: ['test', 'update', 'upgrade'], description: 'Accion')
+        choice(
+            name: 'ACTION',
+            choices: ['test', 'update', 'upgrade', 'rjs_uptake'],
+            description: 'Accion'
+        )
     }
 
     options {
@@ -40,10 +44,16 @@ pipeline {
 
                         if [ "$ACTION" = "test" ]; then
                             REMOTE_CMD="hostname && whoami"
+
                         elif [ "$ACTION" = "update" ]; then
                             REMOTE_CMD="sudo -n apt update"
+
                         elif [ "$ACTION" = "upgrade" ]; then
                             REMOTE_CMD="sudo -n apt update && sudo -n apt upgrade -y"
+
+                        elif [ "$ACTION" = "rjs_uptake" ]; then
+                            REMOTE_CMD="cd /scratch/chrrodri/scripts && chmod +x rjs_uptake.sh && ./rjs_uptake.sh"
+
                         else
                             echo "Accion invalida: $ACTION"
                             exit 1
